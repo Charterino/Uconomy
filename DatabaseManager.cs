@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using I18N.West;
 using MySql.Data.MySqlClient;
 using Rocket.Core.Logging;
 using Steamworks;
@@ -11,7 +10,6 @@ namespace fr34kyn01535.Uconomy
     {
         internal DatabaseManager()
         {
-            new CP1250(); //Workaround for database encoding issues with mono
             CheckSchema();
         }
 

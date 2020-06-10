@@ -52,6 +52,12 @@ namespace fr34kyn01535.Uconomy
                     return;
                 }
 
+                if (amount < Uconomy.Instance.Configuration.Instance.MinimalTransferAmount)
+                {
+                    UnturnedChat.Say(caller, Uconomy.Instance.Translate("command_pay_error_too_small_amount", Uconomy.Instance.Configuration.Instance.MinimalTransferAmount, Uconomy.Instance.Configuration.Instance.MoneyName));
+                    return;
+                }
+
                 if (caller is ConsolePlayer)
                 {
                     Uconomy.Instance.Database.IncreaseBalance(otherPlayer, amount);
@@ -72,27 +78,28 @@ namespace fr34kyn01535.Uconomy
                     }
                     else
                     {
+                        decimal amountToAdd = (amount * (1 - Uconomy.Instance.Configuration.Instance.TransferFee));
                         Uconomy.Instance.Database.IncreaseBalance(caller.Id, -amount);
                         if (otherPlayerOnline != null)
                             UnturnedChat.Say(caller,
                                 Uconomy.Instance.Translations.Instance.Translate("command_pay_private",
-                                    otherPlayerOnline.CharacterName, amount,
-                                    Uconomy.Instance.Configuration.Instance.MoneyName),
+                                    otherPlayerOnline.CharacterName, amountToAdd,
+                                    Uconomy.Instance.Configuration.Instance.MoneyName, amount - amountToAdd, Uconomy.Instance.Configuration.Instance.MoneyName),
                                 UnturnedChat.GetColorFromName(Uconomy.MessageColor, Color.green));
                         else
                             UnturnedChat.Say(caller,
                                 Uconomy.Instance.Translations.Instance.Translate("command_pay_private", otherPlayer,
-                                    amount, Uconomy.Instance.Configuration.Instance.MoneyName),
+                                    amountToAdd, Uconomy.Instance.Configuration.Instance.MoneyName, amount - amountToAdd, Uconomy.Instance.Configuration.Instance.MoneyName),
                                 UnturnedChat.GetColorFromName(Uconomy.MessageColor, Color.green));
 
-                        Uconomy.Instance.Database.IncreaseBalance(otherPlayer, amount);
+                        Uconomy.Instance.Database.IncreaseBalance(otherPlayer, amountToAdd);
                         if (otherPlayerOnline != null)
                             UnturnedChat.Say(otherPlayerOnline.CSteamID,
-                                Uconomy.Instance.Translations.Instance.Translate("command_pay_other_private", amount,
+                                Uconomy.Instance.Translations.Instance.Translate("command_pay_other_private", amountToAdd,
                                     Uconomy.Instance.Configuration.Instance.MoneyName, caller.DisplayName),
                                 UnturnedChat.GetColorFromName(Uconomy.MessageColor, Color.green));
 
-                        Uconomy.Instance.HasBeenPayed((UnturnedPlayer) caller, otherPlayer, amount);
+                        Uconomy.Instance.HasBeenPayed((UnturnedPlayer) caller, otherPlayer, amountToAdd);
                     }
                 }
             }

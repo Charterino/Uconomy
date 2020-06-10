@@ -17,6 +17,9 @@ namespace fr34kyn01535.Uconomy
 
         public string MessageColor;
 
+        public decimal TransferFee;
+        public decimal MinimalTransferAmount;
+
         public void LoadDefaults()
         {
             DatabaseAddress = "127.0.0.1";
@@ -29,6 +32,9 @@ namespace fr34kyn01535.Uconomy
             MoneySymbol = "$";
             MoneyName = "Credits";
             MessageColor = "blue";
+
+            TransferFee = 0.05m; //5%
+            MinimalTransferAmount = 100;
         }
     }
 }
